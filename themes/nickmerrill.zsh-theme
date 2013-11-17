@@ -49,27 +49,35 @@ prompt_context() {
   id_who=`id -u $who`
   id=`id -u`
   if [ "$SSH_CLIENT" ] || [[ $id != $id_who ]]; then
-    echo -n "%F{blue}%n%f@%F{blue}%m%f"
+    echo -n "%F{blue}%n%f"
+    echo -n "@"
+    echo -n "%F{blue}%m%f"
+    [ "$SSH_CLIENT" ] && echo "☁ "
   else
     # At home
-    echo -n "%F{white}%K{blue} ⌂ %f%k"
+    echo -n "%F{blue} ⌘ %f"
   fi
 }
 
 
 # Git: branch/detached head, dirty status
 prompt_git() {
-  local ref dirty ahead behind clean
+  local ref dirty ahead behind clean staged
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
     ZSH_THEME_GIT_PROMPT_DIRTY='±'
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git show-ref --head -s --abbrev |head -n1 2> /dev/null)"
-    if [[ -n $dirty ]]; then
+    gitStatus=$(git status)
+    if [[ $gitStatus =~ Changes\ to\ be\ committed ]]; then
+      staged="⊛" else staged=""
+    fi
+    if [[ $staged != "" ]]; then
+      prompt_segment magenta black
+    elif [[ -n $dirty ]]; then
       prompt_segment yellow black
     else
       prompt_segment green black
     fi
-    gitStatus=$(git status)
     if [[ $gitStatus =~ ahead ]]; then
       ahead=true else ahead=false
     fi
@@ -85,9 +93,6 @@ prompt_git() {
     fi
     if [[ $gitStatus =~ nothing\ to\ commit ]]; then
       clean=" ✔" else clean=""
-    fi
-    if [[ $gitStatus =~ Changes\ to\ be\ committed ]]; then
-      staged="⊛" else staged=""
     fi
     echo -n "$sync${ref/refs\/heads\//}$clean$dirty$staged"
   fi
@@ -117,7 +122,7 @@ prompt_status() {
   symbols=()
   [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
+  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{blue}%}⚙"
 
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
