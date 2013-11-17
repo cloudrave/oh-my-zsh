@@ -49,10 +49,8 @@ prompt_context() {
   id_who=`id -u $who`
   id=`id -u`
   if [ "$SSH_CLIENT" ] || [[ $id != $id_who ]]; then
-    echo -n "%F{blue}%n%f"
-    echo -n "@"
-    echo -n "%F{blue}%m%f"
-    [ "$SSH_CLIENT" ] && echo "☁ "
+    echo -n "%F{blue}%n%f@%F{blue}%m%f"
+    [ "$SSH_CLIENT" ] && echo -n "☁ "
   else
     # At home
     echo -n "%F{blue} ⌘ %f"
