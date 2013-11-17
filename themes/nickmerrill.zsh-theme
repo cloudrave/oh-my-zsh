@@ -44,7 +44,16 @@ prompt_end() {
 
 # Context: user@hostname (who am I and where am I)
 prompt_context() {
-  echo -n "%F{blue}%n%f@%F{blue}%m%f"
+  local who id_who id
+  who=`who am i | sed -e 's/ .*//'`
+  id_who=`id -u $who`
+  id=`id -u`
+  if [ "$SSH_CLIENT" ] || [[ $id != $id_who ]]; then
+    echo -n "%F{blue}%n%f@%F{blue}%m%f"
+  else
+    # At home
+    echo -n "%F{white}%K{blue} ⌂ %f%k"
+  fi
 }
 
 
@@ -96,7 +105,7 @@ function prompt_online() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment blue black '%~'
+  prompt_segment blue white '%~'
 }
 
 # Status:
@@ -132,4 +141,4 @@ build_prompt() {
 RPROMPT='$(battery_charge) $(prompt_online)'
 
 PROMPT='%{%f%b%k%}$(build_prompt) 
-%{%F{red}%}➥%f '
+%F{red}➥%f '
