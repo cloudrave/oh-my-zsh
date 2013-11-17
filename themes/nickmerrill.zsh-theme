@@ -130,8 +130,8 @@ function battery_charge {
 
 ## Main prompt
 build_prompt() {
-  prompt_context
   RETVAL=$?
+  prompt_context
   prompt_status
   prompt_git
   prompt_dir
