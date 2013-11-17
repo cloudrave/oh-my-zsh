@@ -85,10 +85,12 @@ prompt_git() {
 }
 
 function prompt_online() {
-  if [[ -f ~/.offline ]]; then
-    echo $OFFLINE
-  else
-    echo $ONLINE
+  if [[ -f ~/bin/online-check.sh ]]; then
+    if [[ -f ~/.offline ]]; then
+      echo $OFFLINE
+    else
+      echo $ONLINE
+    fi
   fi
 }
 
