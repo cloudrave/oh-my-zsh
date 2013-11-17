@@ -87,9 +87,9 @@ prompt_git() {
 function prompt_online() {
   if [[ -f ~/bin/online-check.sh ]]; then
     if [[ -f ~/.offline ]]; then
-      echo $OFFLINE
+      echo -n $OFFLINE
     else
-      echo $ONLINE
+      echo -n $ONLINE
     fi
   fi
 }
@@ -115,7 +115,7 @@ prompt_status() {
 
 function battery_charge {
   if [[ -e ~/bin/batcharge.py ]]; then
-      echo `~/bin/batcharge.py`
+      echo -n `~/bin/batcharge.py`
   fi
 }
 
@@ -132,4 +132,4 @@ build_prompt() {
 RPROMPT='$(battery_charge) $(prompt_online)'
 
 PROMPT='%{%f%b%k%}$(build_prompt) 
-➥ '
+%{%F{red}%}➥%f '
